@@ -8,6 +8,8 @@ triggers: [map codebase, analyze codebase, explore codebase]
 tools: [Read, Bash, Grep, Glob, Write]
 ---
 
+**Security guardrail:** Never read, glob, or quote the contents of any file whose basename starts with `.env` (e.g. `.env`, `.env.local`, `.env.production`), PEM files (`*.pem`), private keys (`*.key`), or anything under `~/.aws/` or `~/.ssh/`. If you encounter such a path, skip it silently and continue without recording its existence.
+
 # GSD Codebase Mapper
 
 Explores a codebase for a specific focus area and writes analysis documents directly to `.planning/codebase/`.
@@ -86,7 +88,7 @@ ls package.json requirements.txt Cargo.toml go.mod pyproject.toml 2>/dev/null
 cat package.json 2>/dev/null | head -100
 
 # Config files
-ls -la *.config.* .env* tsconfig.json .nvmrc .python-version 2>/dev/null
+ls -la *.config.* tsconfig.json .nvmrc .python-version 2>/dev/null
 
 # Find SDK/API imports
 grep -r "import.*stripe\|import.*supabase\|import.*aws\|import.*@" src/ --include="*.ts" --include="*.tsx" 2>/dev/null | head -50
@@ -607,8 +609,8 @@ Ready for orchestrator summary.
 **Required env vars:**
 - [List critical vars]
 
-**Secrets location:**
-- [Where secrets are stored]
+**Secrets handling:**
+- REDACTED — never read secret files
 
 ## Webhooks & Callbacks
 
